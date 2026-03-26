@@ -1,0 +1,127 @@
+// Define your breakpoints here
+$screens: (
+    sm: 640px,
+    md: 768px,
+    lg: 1024px,
+    xl: 1280px,
+) !default;
+
+/* General Styles */
+@layer components {
+    .content p {
+        @apply font-normal text-base md:text-lg lg:text-xl text-slate-800 dark:text-gray-400;
+    }
+
+    #site-main > #site-main-content:first-child {
+        margin-top: theme("margin.8");
+    }
+}
+
+/* Lists */
+ul[role="list"],
+ul.checked-list {
+    @apply list-none m-0;
+}
+
+ul[role="list"] > li,
+ul.checked-list li > * {
+    @apply pl-0;
+}
+
+ul.checked-list li::marker {
+    @apply content-["✓"] text-primary-500 text-xl font-bold;
+}
+
+/* Grids */
+.filament-tiptap-grid-builder {
+    @apply grid gap-4;
+
+    .filament-tiptap-grid-builder__column {
+        @apply col-span-1;
+
+        > *:first-child {
+            @apply mt-2;
+        }
+
+        > * + * {
+            @apply mt-4;
+        }
+
+        @screen lg {
+            @apply col-span-2;
+        }
+    }
+}
+
+@function get-columns($type, $cols) {
+    @if $type == "responsive" {
+        @return (sm: 1, md: #{$cols}, lg: #{$cols}, xl: #{$cols});
+    } @else if $type == "fixed" {
+        @return ("2": 2, "3": 3, "4": 4, "5": 5);
+    } @else {
+        @return null;
+    }
+}
+
+@mixin apply-responsive-grid($type, $cols, $stack-at) {
+    $columns: get-columns($type, $cols);
+
+    .filament-tiptap-grid-builder[data-type="#{$type}"][data-cols="#{$cols}"][data-stack-at="#{$stack-at}"] {
+        grid-template-columns: repeat(map-get($columns, sm), 1fr) !important;
+
+        @media (min-width: map-get($screens, md)),
+            (min-width: map-get($screens, lg)),
+            (min-width: map-get($screens, xl)) {
+            grid-template-columns: repeat(
+                map-get($columns, md),
+                1fr
+            ) !important;
+        }
+    }
+}
+
+@each $type in ("responsive", "fixed") {
+    @for $cols from 1 through 5 {
+        @each $stack-at in (sm, md, lg, xl) {
+            @include apply-responsive-grid($type, $cols, $stack-at);
+        }
+    }
+}
+
+/* Typography */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+    @apply text-gray-700 dark:text-gray-300 text-2xl md:text-3xl lg:text-4xl;
+}
+
+.hero .prose h1,
+.hero .prose h2,
+.hero .prose h3,
+.hero .prose h4,
+.hero .prose h5,
+.hero .prose h6 {
+    @apply text-gray-300;
+}
+
+.prose ol > li::marker {
+    @apply text-slate-800 dark:text-slate-200 font-bold text-lg;
+}
+
+.prose p > strong,
+.prose a > [data-as-button="true"] {
+    @apply text-slate-800 dark:text-slate-200;
+}
+
+.prose a {
+    @apply text-slate-800 dark:text-slate-200 hover:text-primary-500;
+}
+
+/* Buttons in Paragraphs */
+.prose p > [data-as-button="true"]:hover,
+.prose p > [data-as-button="true"]:is([data-as-button="true"]) {
+    @apply bg-primary-500 no-underline p-2 rounded-md text-xl text-white;
+}

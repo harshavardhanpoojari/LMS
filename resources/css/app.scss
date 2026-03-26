@@ -1,0 +1,17 @@
+@import "/vendor/filament/filament/resources/css/theme.css";
+
+/* general */
+@import "./custom/general";
+
+/* structure */
+@import "./custom/structure/topnav";
+@import "./custom/structure/footer";
+
+/* pages */
+@import "./custom/pages/helper";
+
+@import "./extra";
+
+@import "remixicon/fonts/remixicon.css";
+
+@import "/node_modules/@midzer/tobii/dist/tobii.min.css";
